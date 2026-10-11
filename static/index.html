@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniPost | Multi-Platform Social Media Scheduler & Auto-Publisher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">OmniPost</span>
+                    <span class="brand-badge">PRO AUTO</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    <span>Overview</span>
+                </button>
+                <button class="nav-item" id="nav-accounts" onclick="switchTab('accounts')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Accounts</span>
+                    <span class="badge" id="sidebar-accounts-count">0/4</span>
+                </button>
+                <button class="nav-item" id="nav-create" onclick="switchTab('create')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    <span>Create & Schedule</span>
+                </button>
+                <button class="nav-item" id="nav-clipper" onclick="switchTab('clipper')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    <span>AI Video Clipper</span>
+                    <span class="badge" style="background: var(--accent-cyan); color: #000;">AI</span>
+                </button>
+                <button class="nav-item" id="nav-queue" onclick="switchTab('queue')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Posts & Queue</span>
+                    <span class="badge" id="sidebar-posts-count">0</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="engine-status">
+                    <div class="status-indicator-dot online"></div>
+                    <div class="status-details">
+                        <span class="status-title">Scheduler Engine</span>
+                        <span class="status-subtitle">Active & Running</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Topbar Header -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 class="page-title" id="page-heading">Dashboard Overview</h1>
+                    <p class="page-subtitle" id="page-subheading">Monitor publishing status, connected accounts, and queued tasks</p>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-secondary" id="btn-refresh" onclick="refreshCurrentView()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        <span>Refresh</span>
+                    </button>
+                    <button class="btn btn-primary" id="btn-quick-post" onclick="switchTab('create')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>New Post</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- TAB 1: OVERVIEW -->
+            <section class="tab-pane active" id="tab-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Connected Platforms</span>
+                            <span class="stat-value" id="stat-connected">0 / 4</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-cyan">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Scheduled in Queue</span>
+                            <span class="stat-value" id="stat-scheduled">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Successfully Published</span>
+                            <span class="stat-value" id="stat-published">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Automation Engine</span>
+                            <span class="stat-value highlight">Playwright Brave</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Quick Channels -->
+                <div class="dashboard-columns">
+                    <div class="card col-main">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Posts Activity</h3>
+                            <button class="btn-link" onclick="switchTab('queue')">View All Queue &rarr;</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="posts-table-wrapper" id="overview-posts-container">
+                                <!-- Populated dynamically -->
+                                <div class="empty-state">
+                                    <p>No posts created yet. Click "New Post" to schedule your first upload!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card col-side">
+                        <div class="card-header">
+                            <h3 class="card-title">Platform Status</h3>
+                            <button class="btn-link" onclick="switchTab('accounts')">Manage &rarr;</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-platforms-list" id="overview-platforms-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ACCOUNTS -->
+            <section class="tab-pane" id="tab-accounts">
+                <div class="accounts-header-banner">
+                    <div class="banner-content">
+                        <h2>Instant In-Browser Account Connection</h2>
+                        <p>Click <strong>"Open in Tab"</strong> to immediately open YouTube Studio, TikTok, Instagram, or Facebook in a new tab right inside your browser. Once signed in, click <strong>"✓ Mark Connected"</strong> to link your channel and profile.</p>
+                    </div>
+                </div>
+
+                <div class="platforms-grid" id="accounts-cards-grid">
+                    <!-- Populated dynamically: YouTube, TikTok, Instagram, Facebook -->
+                </div>
+            </section>
+
+            <!-- TAB 3: CREATE & SCHEDULE -->
+            <section class="tab-pane" id="tab-create">
+                <div class="create-post-container">
+                    <div class="create-form-column">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">1. Upload Video File</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('video-file-input').click()">
+                                    <input type="file" id="video-file-input" accept="video/mp4,video/quicktime,video/webm" style="display: none;" onchange="handleFileSelect(event)">
+                                    <div class="dropzone-content" id="dropzone-prompt">
+                                        <div class="dropzone-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        </div>
+                                        <p class="dropzone-main-text">Drag and drop your video here, or <span class="highlight-text">browse files</span></p>
+                                        <p class="dropzone-sub-text">Supports MP4, MOV, WEBM (Up to 2GB)</p>
+                                    </div>
+                                    <div class="dropzone-progress" id="dropzone-progress" style="display: none;">
+                                        <div class="progress-bar-track">
+                                            <div class="progress-bar-fill" id="upload-progress-fill"></div>
+                                        </div>
+                                        <span class="progress-text" id="upload-progress-text">Uploading video... 0%</span>
+                                    </div>
+                                    <div class="dropzone-selected" id="dropzone-selected" style="display: none;">
+                                        <span class="selected-filename" id="selected-video-filename">video.mp4</span>
+                                        <span class="selected-filesize" id="selected-video-filesize">0 MB</span>
+                                        <button type="button" class="btn-clear" onclick="clearSelectedVideo(event)">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">2. Post Details & Content</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="post-title">Video Title <span class="required">*</span></label>
+                                    <input type="text" id="post-title" class="form-input" placeholder="Enter an attention-grabbing title...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="post-description">Description / Caption</label>
+                                    <textarea id="post-description" class="form-textarea" rows="4" placeholder="Write caption or description for this video..."></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="post-tags">Hashtags & Tags</label>
+                                    <input type="text" id="post-tags" class="form-input" placeholder="#shorts #viral #fyp #reels #content">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="create-sidebar-column">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">3. Destination Platforms</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="helper-text">Select which platforms will receive this video:</p>
+                                <div class="destination-toggles">
+                                    <label class="platform-checkbox-label">
+                                        <input type="checkbox" id="dest-youtube" checked>
+                                        <div class="custom-toggle yt-toggle">
+                                            <span class="platform-name">YouTube</span>
+                                            <span class="format-tag">Shorts / Video</span>
+                                        </div>
+                                    </label>
+                                    <label class="platform-checkbox-label">
+                                        <input type="checkbox" id="dest-tiktok" checked>
+                                        <div class="custom-toggle tt-toggle">
+                                            <span class="platform-name">TikTok</span>
+                                            <span class="format-tag">Video</span>
+                                        </div>
+                                    </label>
+                                    <label class="platform-checkbox-label">
+                                        <input type="checkbox" id="dest-instagram" checked>
+                                        <div class="custom-toggle ig-toggle">
+                                            <span class="platform-name">Instagram</span>
+                                            <span class="format-tag">Reels</span>
+                                        </div>
+                                    </label>
+                                    <label class="platform-checkbox-label">
+                                        <input type="checkbox" id="dest-facebook" checked>
+                                        <div class="custom-toggle fb-toggle">
+                                            <span class="platform-name">Facebook</span>
+                                            <span class="format-tag">Reels / Post</span>
+                                        </div>
+                                    </label>
+                                    <label class="platform-checkbox-label">
+                                        <input type="checkbox" id="dest-telegram" checked>
+                                        <div class="custom-toggle tg-toggle">
+                                            <span class="platform-name">Telegram</span>
+                                            <span class="format-tag">Channel / Video</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">4. Scheduling</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="schedule-type-selector">
+                                    <label class="radio-label">
+                                        <input type="radio" name="schedule-mode" value="now" checked onchange="toggleScheduleDate(false)">
+                                        <span>Publish Immediately</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="schedule-mode" value="later" onchange="toggleScheduleDate(true)">
+                                        <span>Schedule for Later</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group" id="datetime-picker-group" style="display: none; margin-top: 1rem;">
+                                    <label for="post-scheduled-at">Select Date & Time</label>
+                                    <input type="datetime-local" id="post-scheduled-at" class="form-input">
+                                    <span class="field-hint">The scheduler will automatically launch publishing at this local time.</span>
+                                </div>
+
+                                <div class="submit-actions" style="margin-top: 1.5rem;">
+                                    <button class="btn btn-primary btn-block btn-lg" id="btn-submit-post" onclick="submitPost()">
+                                        <span id="submit-btn-text">🚀 Publish to Platforms</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video Preview Player -->
+                        <div class="card preview-card" id="video-preview-card" style="display: none; margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <h3 class="card-title">Video Preview</h3>
+                            </div>
+                            <div class="card-body">
+                                <video id="video-preview-player" controls class="video-preview"></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3.5: AI CLIPPER -->
+            <section class="tab-pane" id="tab-clipper">
+                <div class="accounts-header-banner" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.1)); border-color: rgba(6, 182, 212, 0.3);">
+                    <div class="banner-content">
+                        <h2>✨ AI Video Clipper & 9:16 Shorts Generator</h2>
+                        <p>Turn long widescreen (16:9) videos into viral vertical (9:16) Shorts, TikToks, and Reels. Extract high-impact clips, convert aspect ratios with smart blurred background styling, or combine multiple moments into a highlight reel.</p>
+                    </div>
+                </div>
+
+                <div class="create-post-container">
+                    <div class="create-form-column">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Select Source Video & Moments</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="clipper-video-select">Choose Available Uploaded Video</label>
+                                    <select id="clipper-video-select" class="form-input">
+                                        <option value="">-- Select video file --</option>
+                                    </select>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                    <div class="form-group">
+                                        <label for="clip-start-sec">Start Time (Seconds)</label>
+                                        <input type="number" id="clip-start-sec" class="form-input" value="0" min="0" step="0.5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="clip-end-sec">End Time (Seconds)</label>
+                                        <input type="number" id="clip-end-sec" class="form-input" value="30" min="1" step="0.5">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="clip-title">Short Title</label>
+                                    <input type="text" id="clip-title" class="form-input" placeholder="e.g. Unbelievable Moment You Missed #shorts">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="clip-desc">Caption & Tags</label>
+                                    <input type="text" id="clip-desc" class="form-input" value="#shorts #viral #fyp #reels #content">
+                                </div>
+
+                                <button class="btn btn-primary btn-block btn-lg" id="btn-run-clipper" onclick="generateShortClip()" style="margin-top: 1rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));">
+                                    <span>⚡ Cut & Convert to 9:16 Vertical Short</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="create-sidebar-column">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">How the AI Engine Works</h3>
+                            </div>
+                            <div class="card-body" style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+                                <p><strong>1. Audio & Speech Analysis:</strong> Scans speech transcripts to pick high-retention moments and viral keyword hooks.</p>
+                                <p style="margin-top: 0.75rem;"><strong>2. Smart 9:16 Aspect Conversion:</strong> Converts horizontal widescreen frames into mobile-optimized 1080x1920 vertical format using stacked blurred backgrounds.</p>
+                                <p style="margin-top: 0.75rem;"><strong>3. One-Click OmniPost Staging:</strong> Generated Shorts are placed directly into your drafts queue for instant multi-platform scheduling across YouTube, TikTok, Instagram, and Facebook.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: POSTS & QUEUE -->
+            <section class="tab-pane" id="tab-queue">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Publishing Queue & Post History</h3>
+                        <div class="filter-controls">
+                            <span class="queue-status-hint">Auto-refreshes every 10 seconds</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="posts-table-wrapper" id="queue-posts-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

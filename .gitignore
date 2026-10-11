@@ -1,0 +1,108 @@
+# ==============================================================================
+# Python & Bytecode
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# ==============================================================================
+# Virtual Environments
+# ==============================================================================
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ==============================================================================
+# Environment & Secrets (NEVER COMMIT CREDENTIALS)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# OAuth & API Credentials
+storage/client_secret.json
+storage/youtube_token.json
+storage/youtube_pkce_verifier.txt
+storage/*.json
+storage/*.txt
+
+# ==============================================================================
+# Application Storage & Runtime Data
+# ==============================================================================
+# Browser session data (Playwright / Chrome / Edge user profiles & cookies)
+storage/sessions/*
+!storage/sessions/.gitkeep
+
+# Downloaded / generated video clips
+storage/videos/*
+!storage/videos/.gitkeep
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# SQLite Databases & Journals
+storage/*.db
+storage/*.sqlite
+storage/*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Test artifacts and screenshots
+storage/test_screenshots/*
+!storage/test_screenshots/.gitkeep
+test-results/
+playwright-report/
+
+# Debug and temporary helper scripts
+storage/_*.py
+
+# ==============================================================================
+# Logs & Testing
+# ==============================================================================
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==============================================================================
+# Operating System & IDE Files
+# ==============================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
